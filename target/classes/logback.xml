@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="APPLOG-FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>c:/temp/info.log</File>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+       <FileNamePattern>info.log.%d{yyyy-MM-dd}.log</FileNamePattern>
+    </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"type":"console"}</customFields>
+            <includeContext>false</includeContext>
+            <includeCallerData>true</includeCallerData>
+            <fieldNames>
+                <timestamp>timestamp</timestamp>
+                <message>message</message>
+                <thread>[ignore]</thread>
+                <logger>[ignore]</logger>
+                <version>[ignore]</version>
+                <levelValue>[ignore]</levelValue>
+                <caller>trace</caller>
+                <stackTrace>exception</stackTrace>
+                <mdc>context</mdc>
+            </fieldNames>
+            <provider class="net.logstash.logback.composite.loggingevent.ArgumentsJsonProvider" />
+        </encoder>
+    </appender>
+
+    <appender name="APPLOG-CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"type":"console"}</customFields>
+            <includeContext>false</includeContext>
+            <includeCallerData>true</includeCallerData>
+            <fieldNames>
+                <timestamp>timestamp</timestamp>
+                <message>message</message>
+                <thread>[ignore]</thread>
+                <logger>[ignore]</logger>
+                <version>[ignore]</version>
+                <levelValue>[ignore]</levelValue>
+                <caller>trace</caller>
+                <stackTrace>exception</stackTrace>
+                <mdc>context</mdc>
+            </fieldNames>
+            <provider class="net.logstash.logback.composite.loggingevent.ArgumentsJsonProvider" />
+        </encoder>
+    </appender>
+
+    <appender name="APPLOG-ELK" class="com.github.danielwegener.logback.kafka.KafkaAppender">
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <version />
+                <pattern>
+                    <pattern>
+                        {
+                            "type": "applog",
+                            "node_name": "${NODE_NAME}",
+                            "namespace_name": "${NAMESPACE}",
+                            "container_name": "default",
+                            "pod_name": "${EQUITY_SERVICE_NAME}",
+                            "level": "%level",
+                            "task":"%thread",
+                            "pid": "#asLong{${PID:-}}",
+                            "hashcode": "%X{hashcode}"
+                        }
+                    </pattern>
+                </pattern>
+                <!-- <mdc /> -->
+                <nestedField>
+                    <fieldName>telemetry</fieldName>
+                    <providers>
+                        <pattern>
+                            <pattern>
+                            {
+                                "traceId": "%X{traceId:-}",
+                                "spanId": "%X{spanId:-}",
+                                "parentId": "%X{parentId:-}",
+                                "sampled": "%X{sampled}"
+                            }
+                            </pattern>
+                        </pattern>
+                    </providers>
+                </nestedField>
+                <message />
+                <nestedField>
+                    <fieldName>data</fieldName>
+                    <providers>
+                        <pattern>
+                            <pattern>
+                                {
+                                    "aop": "%mdc{aop}",
+                                    "class":"%logger{40}",
+                                    "class":"%logger",
+                                    "method":"%X{method}",
+                                    "content": "#tryJson{%mdc{content}}",
+                                    "stack_trace": "%exception{10}"
+                                }
+                            </pattern>
+                        </pattern>
+                    </providers>
+                </nestedField>
+            </providers>
+        </encoder>
+
+        <topic>test01-amp</topic>
+        <keyingStrategy class="com.github.danielwegener.logback.kafka.keying.NoKeyKeyingStrategy" />
+        <deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy" />
+ 
+        <producerConfig>bootstrap.servers=${BOOTSTRAP_SERVERS}</producerConfig>
+        <producerConfig>client.id=${HOSTNAME}-${CONTEXT_NAME}-logback-relaxed</producerConfig>
+        <producerConfig>ssl.endpoint.identification.algorithm=HTTPS</producerConfig>
+        <producerConfig>ssl.keystore.type=PKCS12</producerConfig>
+        <producerConfig>ssl.keystore.location=./config/keystore.jks</producerConfig>
+        <producerConfig>ssl.keystore.password=${KEYSTORE_PASSWORD}</producerConfig>
+        <producerConfig>ssl.truststore.type=JKS</producerConfig>
+        <producerConfig>ssl.truststore.location=./config/truststore.jks</producerConfig>
+        <producerConfig>ssl.truststore.password=${TRUSTSTORE_PASSWORD}</producerConfig>
+        <producerConfig>security.protocol=SSL</producerConfig>
+
+        <!-- <appender-ref ref="APPLOG-CONSOLE" /> -->
+    </appender>
+
+ <appender name="APPLOG-ASYNC" class="ch.qos.logback.classic.AsyncAppender"> 
+       <appender-ref ref="APPLOG-FILE-ROLLING" /> 
+        <!-- <appender-ref ref="APPLOG-ELK" /> --> 
+        <appender-ref ref="APPLOG-CONSOLE" />
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="APPLOG-CONSOLE" />
+        <appender-ref ref="APPLOG-FILE-ROLLING" /> 
+        <!-- <appender-ref ref="APPLOG-ASYNC" /> -->
+    </root>
+</configuration>

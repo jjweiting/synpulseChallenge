@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="ACCESSLOG-FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>c:/temp/access.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>access.log.%d{yyyy-MM-dd}.log</FileNamePattern>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>event.getRequestURL().contains("health")</expression>
+            </evaluator>
+            <onMatch>DENY</onMatch>
+            <OnMismatch>NEUTRAL</OnMismatch>
+        </filter>
+        <encoder>
+            <pattern>common</pattern>
+        </encoder>
+    </appender>
+    <appender name="ACCESSLOG-CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>event.getRequestURL().contains("health")</expression>
+            </evaluator>
+            <onMatch>DENY</onMatch>
+            <OnMismatch>NEUTRAL</OnMismatch>
+        </filter>
+        <encoder>
+            <pattern>common</pattern>
+        </encoder>
+    </appender>
+    <appender-ref ref="ACCESSLOG-FILE-ROLLING"/>
+    <appender-ref ref="ACCESSLOG-CONSOLE"/>
+</configuration>

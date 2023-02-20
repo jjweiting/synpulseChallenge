@@ -1,0 +1,13 @@
+/Users/chenweiting/Documents/Git/git_jjweiting/synpulse/src/main/java/com/synpulse/model/User.java
+/Users/chenweiting/Documents/Git/git_jjweiting/synpulse/src/main/java/com/synpulse/kafka/JsonKafkaProducer.java
+/Users/chenweiting/Documents/Git/git_jjweiting/synpulse/src/main/java/com/synpulse/config/KafkaTopicConfig.java
+/Users/chenweiting/Documents/Git/git_jjweiting/synpulse/src/main/java/com/synpulse/controller/UserAccountController.java
+/Users/chenweiting/Documents/Git/git_jjweiting/synpulse/src/main/java/com/synpulse/handler/RestExceptionHandler.java
+/Users/chenweiting/Documents/Git/git_jjweiting/synpulse/src/main/java/com/synpulse/CollectorApplication.java
+/Users/chenweiting/Documents/Git/git_jjweiting/synpulse/src/main/java/com/synpulse/model/ABCResponse.java
+/Users/chenweiting/Documents/Git/git_jjweiting/synpulse/src/main/java/com/synpulse/model/UserRequest.java
+/Users/chenweiting/Documents/Git/git_jjweiting/synpulse/src/main/java/com/synpulse/config/SwaggerConfig.java
+/Users/chenweiting/Documents/Git/git_jjweiting/synpulse/src/main/java/com/synpulse/controller/TransactionController.java
+/Users/chenweiting/Documents/Git/git_jjweiting/synpulse/src/main/java/com/synpulse/controller/DataCollectorController.java
+/Users/chenweiting/Documents/Git/git_jjweiting/synpulse/src/main/java/com/synpulse/controller/UserController.java
+/Users/chenweiting/Documents/Git/git_jjweiting/synpulse/src/main/java/com/synpulse/model/ErrorMessage.java
